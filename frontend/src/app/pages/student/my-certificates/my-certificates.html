@@ -1,0 +1,112 @@
+<div class="certs-page">
+
+  <nav class="topnav">
+    <a routerLink="/" class="nav-logo">🎓 ELearn</a>
+    <div class="nav-links">
+      <a routerLink="/student/dashboard"
+         class="nav-link">Dashboard</a>
+      <a routerLink="/student/my-courses"
+         class="nav-link">My Courses</a>
+    </div>
+  </nav>
+
+  <div class="page-body">
+    <h1>🏆 My Certificates</h1>
+    <p class="subtitle">
+      Your earned certificates of completion
+    </p>
+
+    @if (isLoading) {
+      <div class="loading">
+        Loading your certificates...
+      </div>
+    }
+
+    @if (!isLoading && certificates.length === 0) {
+      <div class="empty-state">
+        <div style="font-size:72px">🏆</div>
+        <h3>No certificates yet</h3>
+        <p>
+          Complete a course and pass the quiz
+          to earn your first certificate!
+        </p>
+        <a routerLink="/courses" class="btn-browse">
+          Browse Courses
+        </a>
+      </div>
+    }
+
+    <div class="certs-grid">
+      @for (cert of certificates;
+            track cert.id; let i = $index) {
+
+        <div class="cert-card">
+
+          <!-- MINI CERTIFICATE VISUAL -->
+          <div class="cert-visual">
+            <div class="cv-logo">🎓</div>
+            <div class="cv-title">
+              Certificate of Completion
+            </div>
+            <div class="cv-name">
+              {{ cert.student?.fullName }}
+            </div>
+          </div>
+
+          <div class="cert-info">
+            <h3>{{ cert.course?.title }}</h3>
+
+            <div class="cert-meta">
+              <div class="meta-row">
+                <span class="meta-label">
+                  Certificate No.
+                </span>
+                <span class="meta-value mono">
+                  {{ cert.certificateNumber }}
+                </span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">
+                  Score Achieved
+                </span>
+                <span class="meta-value score">
+                  {{ cert.quizPercentage }}%
+                </span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Issued On</span>
+                <span class="meta-value">
+                  {{ cert.issuedAt |
+                     date:'MMM dd, yyyy' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="cert-actions">
+              <button class="btn-download"
+                      [disabled]="downloading === i"
+                      (click)="download(
+                        cert.course?.id, i)">
+                @if (downloading === i) {
+                  <span>Generating...</span>
+                } @else {
+                  <span>⬇️ Download PDF</span>
+                }
+              </button>
+
+              <a [routerLink]="[
+                   '/verify',
+                   cert.certificateNumber]"
+                 class="btn-verify"
+                 target="_blank">
+                🔍 Verify
+              </a>
+            </div>
+          </div>
+
+        </div>
+      }
+    </div>
+  </div>
+
+</div>

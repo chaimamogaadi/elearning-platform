@@ -1,0 +1,253 @@
+<div class="quiz-shell">
+
+  <!-- HEADER -->
+  <div class="quiz-header">
+    <a [routerLink]="['/courses', courseId, 'learn']"
+       class="back-link">← Back to Course</a>
+
+    @if (started && !finished) {
+      <div class="timer"
+           [class.danger]="timeLeft < 60">
+        ⏱️ {{ formattedTime }}
+      </div>
+    }
+  </div>
+
+  @if (isLoading) {
+    <div class="loading">Loading quiz...</div>
+  }
+
+  <!-- START SCREEN -->
+  @if (!isLoading && !started && !finished && quiz) {
+    <div class="start-screen">
+      <div class="quiz-icon">📝</div>
+      <h1>{{ quiz.title }}</h1>
+      <p>{{ quiz.description || 'Test your knowledge!' }}</p>
+
+      <div class="quiz-info-grid">
+        <div class="info-box">
+          <div class="info-val">
+            {{ quiz.questions?.length || 0 }}
+          </div>
+          <div class="info-lbl">Questions</div>
+        </div>
+        <div class="info-box">
+          <div class="info-val">
+            {{ quiz.timeLimitMinutes }}
+          </div>
+          <div class="info-lbl">Minutes</div>
+        </div>
+        <div class="info-box">
+          <div class="info-val">{{ quiz.passingScore }}%</div>
+          <div class="info-lbl">To Pass</div>
+        </div>
+      </div>
+
+      <div class="start-tips">
+        <div class="tip">📌 Read each question carefully</div>
+        <div class="tip">⏱️ Timer starts when you begin</div>
+        <div class="tip">✅ You can review answers before submitting</div>
+      </div>
+
+      <button class="btn-start" (click)="startQuiz()">
+        🚀 Start Quiz
+      </button>
+    </div>
+  }
+
+  <!-- QUIZ PLAYER -->
+  @if (started && !finished) {
+    <div class="quiz-body">
+
+      <!-- PROGRESS -->
+      <div class="quiz-progress">
+        <div class="progress-text">
+          Question {{ currentIndex + 1 }}
+          of {{ questions.length }}
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill"
+               [style.width]="progressPercent + '%'">
+          </div>
+        </div>
+        <div class="answered-count">
+          {{ answeredCount }}/{{ questions.length }} answered
+        </div>
+      </div>
+
+      <!-- QUESTION DOTS -->
+      <div class="question-dots">
+        @for (q of questions; track q.id; let i = $index) {
+          <div class="q-dot"
+               [class.current]="i === currentIndex"
+               [class.answered]="answers[q.id]"
+               (click)="goToQuestion(i)">
+            {{ i + 1 }}
+          </div>
+        }
+      </div>
+
+      <!-- CURRENT QUESTION -->
+      @if (currentQuestion) {
+        <div class="question-card">
+          <div class="question-num">
+            Question {{ currentIndex + 1 }}
+          </div>
+          <div class="question-text">
+            {{ currentQuestion.questionText }}
+          </div>
+
+          <div class="options-list">
+            @for (opt of getOptions(currentQuestion);
+                  track opt; let oi = $index) {
+              <div class="option"
+                   [class.selected]="isSelected(
+                     currentQuestion.id, opt)"
+                   (click)="selectAnswer(
+                     currentQuestion.id, opt)">
+                <div class="option-letter">
+                  {{ ['A','B','C','D'][oi] }}
+                </div>
+                <div class="option-text">{{ opt }}</div>
+                @if (isSelected(currentQuestion.id, opt)) {
+                  <div class="option-check">✓</div>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- NAVIGATION -->
+          <div class="question-nav">
+            <button class="btn-nav"
+                    [disabled]="currentIndex === 0"
+                    (click)="prevQuestion()">
+              ← Previous
+            </button>
+
+            @if (currentIndex < questions.length - 1) {
+              <button class="btn-nav btn-next-q"
+                      (click)="nextQuestion()">
+                Next →
+              </button>
+            } @else {
+              <button class="btn-submit-quiz"
+                      [disabled]="isSubmitting"
+                      (click)="submitQuiz()">
+                {{ isSubmitting ?
+                   'Submitting...' : '✅ Submit Quiz' }}
+              </button>
+            }
+          </div>
+
+        </div>
+      }
+
+      @if (errorMessage) {
+        <div class="error-msg">{{ errorMessage }}</div>
+      }
+
+    </div>
+  }
+
+  <!-- RESULTS SCREEN -->
+  @if (finished && result) {
+    <div class="results-screen">
+
+      <div class="result-hero"
+           [class.passed]="result.passed"
+           [class.failed]="!result.passed">
+        <div class="result-icon">
+          {{ result.passed ? '🏆' : '📚' }}
+        </div>
+        <h1>{{ result.passed ? 'Passed!' : 'Not Passed' }}</h1>
+        <div class="result-score">{{ result.percentage }}%</div>
+        <p>{{ result.message }}</p>
+      </div>
+
+      <div class="score-breakdown">
+        <div class="score-box">
+          <div class="score-val">{{ result.score }}</div>
+          <div class="score-lbl">Points Earned</div>
+        </div>
+        <div class="score-box">
+          <div class="score-val">{{ result.totalPoints }}</div>
+          <div class="score-lbl">Total Points</div>
+        </div>
+        <div class="score-box">
+          <div class="score-val">{{ result.percentage }}%</div>
+          <div class="score-lbl">Your Score</div>
+        </div>
+        <div class="score-box">
+          <div class="score-val">{{ quiz.passingScore }}%</div>
+          <div class="score-lbl">Passing Score</div>
+        </div>
+      </div>
+
+      <!-- ANSWER REVIEW -->
+      <div class="review-section">
+        <h2>Answer Review</h2>
+
+        @for (qr of result.questionResults; track qr.questionId;
+              let i = $index) {
+          <div class="review-item"
+               [class.correct]="qr.isCorrect"
+               [class.wrong]="!qr.isCorrect">
+
+            <div class="review-header">
+              <span class="q-badge">Q{{ i + 1 }}</span>
+              <span class="result-badge">
+                {{ qr.isCorrect ? '✅ Correct' : '❌ Wrong' }}
+              </span>
+              <span class="points-badge">
+                +{{ qr.isCorrect ? qr.points : 0 }}/{{ qr.points }}
+              </span>
+            </div>
+
+            <div class="review-question">
+              {{ qr.questionText }}
+            </div>
+
+            <div class="review-answers">
+              <div class="your-answer"
+                   [class.correct-ans]="qr.isCorrect"
+                   [class.wrong-ans]="!qr.isCorrect">
+                <span class="ans-label">Your answer:</span>
+                {{ qr.studentAnswer || 'Not answered' }}
+              </div>
+
+              @if (!qr.isCorrect) {
+                <div class="correct-answer">
+                  <span class="ans-label">Correct answer:</span>
+                  {{ qr.correctAnswer }}
+                </div>
+              }
+            </div>
+
+          </div>
+        }
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="result-actions">
+        @if (!result.passed) {
+          <button class="btn-retake"
+                  (click)="retakeQuiz()">
+            🔄 Retake Quiz
+          </button>
+        }
+        <a [routerLink]="['/courses', courseId, 'learn']"
+           class="btn-back-course">
+          📚 Back to Course
+        </a>
+        @if (result.passed) {
+          <a [routerLink]="['/certificate', courseId]"
+             class="btn-certificate">
+            🏆 Get Certificate
+          </a>
+        }
+      </div>
+
+    </div>
+  }
+
+</div>

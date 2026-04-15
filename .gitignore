@@ -1,0 +1,30 @@
+# ===== BACKEND — Java/Spring Boot =====
+backend/target/
+backend/*.class
+backend/*.jar
+backend/*.war
+backend/.idea/
+backend/*.iml
+
+# ===== BACKEND SECRETS — NEVER PUSH =====
+backend/src/main/resources/application.properties
+backend/src/main/resources/application-prod.properties
+
+# ===== FRONTEND — Angular/Node =====
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.suo
+*.iml
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== LOGS =====
+*.log
+logs/

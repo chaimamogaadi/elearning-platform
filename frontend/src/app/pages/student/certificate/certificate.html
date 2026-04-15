@@ -1,0 +1,216 @@
+<div class="cert-page">
+
+  <!-- NAVBAR -->
+  <nav class="cert-nav">
+    <a routerLink="/" class="nav-logo">🎓 ELearn</a>
+    <a routerLink="/student/dashboard"
+       class="nav-link">Dashboard</a>
+  </nav>
+
+  <!-- ===== VERIFY MODE ===== -->
+  @if (verifyMode) {
+    <div class="verify-container">
+
+      <div class="verify-header">
+        <h1>🔍 Certificate Verification</h1>
+        <p>Verify the authenticity of an ELearn certificate</p>
+      </div>
+
+      @if (isLoading) {
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Verifying certificate...</p>
+        </div>
+      }
+
+      @if (verifyError) {
+        <div class="verify-invalid">
+          <div class="result-icon">❌</div>
+          <h2>Invalid Certificate</h2>
+          <p>{{ verifyError }}</p>
+        </div>
+      }
+
+      @if (verifiedCert && !isLoading) {
+        <div class="verify-valid">
+          <div class="valid-badge">✅ VERIFIED</div>
+          <h2>This is a valid ELearn certificate</h2>
+
+          <div class="cert-details">
+            <div class="detail-row">
+              <span class="detail-label">
+                Student Name
+              </span>
+              <span class="detail-value">
+                {{ verifiedCert.student?.fullName }}
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Course</span>
+              <span class="detail-value">
+                {{ verifiedCert.course?.title }}
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">
+                Certificate No.
+              </span>
+              <span class="detail-value mono">
+                {{ verifiedCert.certificateNumber }}
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Score</span>
+              <span class="detail-value">
+                {{ verifiedCert.quizPercentage }}%
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Issued On</span>
+              <span class="detail-value">
+                {{ verifiedCert.issuedAt |
+                   date:'MMMM dd, yyyy' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  }
+
+  <!-- ===== DOWNLOAD MODE ===== -->
+  @if (!verifyMode) {
+    <div class="download-container">
+
+      <!-- CERTIFICATE PREVIEW -->
+      <div class="cert-preview">
+
+        <!-- DECORATIVE CERTIFICATE -->
+        <div class="fake-cert">
+          <div class="fc-border">
+            <div class="fc-corner fc-tl">✦</div>
+            <div class="fc-corner fc-tr">✦</div>
+            <div class="fc-corner fc-bl">✦</div>
+            <div class="fc-corner fc-br">✦</div>
+
+            <div class="fc-logo">🎓</div>
+            <div class="fc-platform">ELEARN PLATFORM</div>
+            <div class="fc-title">
+              Certificate of Completion
+            </div>
+            <div class="fc-divider"></div>
+            <div class="fc-presented">
+              This certifies that
+            </div>
+            <div class="fc-name">[Your Name]</div>
+            <div class="fc-completed">
+              has successfully completed
+            </div>
+            <div class="fc-course">
+              [Course Title]
+            </div>
+            <div class="fc-score-badge">
+              Final Score: 100%
+            </div>
+
+            <div class="fc-footer">
+              <div class="fc-sig">
+                <div class="fc-sig-line"></div>
+                <div class="fc-sig-label">Instructor</div>
+              </div>
+              <div class="fc-sig">
+                <div class="fc-sig-line"></div>
+                <div class="fc-sig-label">Platform</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DOWNLOAD PANEL -->
+      <div class="download-panel">
+
+        <div class="panel-icon">🏆</div>
+        <h1>Your Certificate is Ready!</h1>
+        <p>
+          Congratulations on completing this course.
+          Download your official certificate of completion
+          as a PDF.
+        </p>
+
+        @if (errorMessage) {
+          <div class="error-msg">{{ errorMessage }}</div>
+        }
+        @if (successMessage) {
+          <div class="success-msg">{{ successMessage }}</div>
+        }
+
+        <button class="btn-download"
+                [disabled]="isDownloading"
+                (click)="downloadCertificate()">
+          @if (isDownloading) {
+            <span>
+              <span class="spinner-sm"></span>
+              Generating PDF...
+            </span>
+          } @else {
+            <span>⬇️ Download Certificate (PDF)</span>
+          }
+        </button>
+
+        <div class="cert-features">
+          <div class="feature">
+            <span class="feat-icon">📄</span>
+            <div>
+              <strong>PDF Format</strong>
+              <p>Professional A4 landscape PDF</p>
+            </div>
+          </div>
+          <div class="feature">
+            <span class="feat-icon">🔒</span>
+            <div>
+              <strong>Unique Certificate ID</strong>
+              <p>Each certificate has a unique number</p>
+            </div>
+          </div>
+          <div class="feature">
+            <span class="feat-icon">✅</span>
+            <div>
+              <strong>Publicly Verifiable</strong>
+              <p>Anyone can verify your certificate online</p>
+            </div>
+          </div>
+          <div class="feature">
+            <span class="feat-icon">♾️</span>
+            <div>
+              <strong>Lifetime Access</strong>
+              <p>Download anytime from your dashboard</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="verify-hint">
+          🔍 Share your certificate number for verification at
+          <strong>localhost:4200/verify/CERT-XXXXXXXX</strong>
+        </div>
+
+        <div class="action-links">
+          <a routerLink="/my-certificates"
+             class="link-action">
+            View All My Certificates →
+          </a>
+          <a routerLink="/courses"
+             class="link-action">
+            Browse More Courses →
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  }
+
+</div>

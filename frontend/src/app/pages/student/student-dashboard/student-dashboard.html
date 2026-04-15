@@ -1,0 +1,264 @@
+<div class="student-shell">
+
+  <!-- TOP NAVBAR -->
+  <nav class="topnav">
+    <div class="nav-logo">🎓 ELearn</div>
+    <div class="nav-right">
+      <span class="nav-username">{{ user?.username }}</span>
+      <a routerLink="/my-certificates" class="nav-link">
+  🏆 My Certificates
+</a>
+      <button class="btn-logout" (click)="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    @if (isLoading) {
+      <div class="loading-screen">
+        <div class="spinner"></div>
+        <p>Loading your dashboard...</p>
+      </div>
+    }
+
+    @if (!isLoading && user) {
+
+      <!-- WELCOME BANNER -->
+      <div class="welcome-banner">
+        <div class="welcome-avatar">
+          {{ user.fullName?.charAt(0)?.toUpperCase() }}
+        </div>
+        <div class="welcome-text">
+          <h1>Welcome back, {{ user.fullName }}! 👋</h1>
+          <p>{{ user.email }}</p>
+        </div>
+        <div class="role-badge">{{ user.role }}</div>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="stats-row">
+  <div class="stat-box">
+    <div class="stat-icon">📚</div>
+    <div class="stat-val">{{ enrolledCourses.length }}</div>
+    <div class="stat-lbl">Enrolled Courses</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon">✅</div>
+    <div class="stat-val">0</div>
+    <div class="stat-lbl">Completed</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon">🏆</div>
+    <div class="stat-val">0</div>
+    <div class="stat-lbl">Certificates</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-icon">⭐</div>
+    <div class="stat-val">0</div>
+    <div class="stat-lbl">Quiz Scores</div>
+  </div>
+</div>
+
+      <!-- TWO COLUMN LAYOUT -->
+      <div class="two-col">
+
+<!-- LEFT: My Courses -->
+<div class="card">
+  <div class="card-header">
+    <h2>📚 My Courses</h2>
+    <a routerLink="/student/my-courses"
+       style="font-size:13px; color:#667eea;
+              text-decoration:none; font-weight:600">
+      View All →
+    </a>
+  </div>
+
+  @if (isCoursesLoading) {
+    <div style="text-align:center; padding:32px;
+                color:#888; font-size:14px">
+      Loading courses...
+    </div>
+  }
+
+  @if (!isCoursesLoading && enrolledCourses.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">📖</div>
+      <p>You haven't enrolled in any courses yet.</p>
+      <a routerLink="/courses" class="btn-browse">
+        Browse Courses
+      </a>
+    </div>
+  }
+
+  @if (!isCoursesLoading && enrolledCourses.length > 0) {
+    <div style="padding: 12px 0">
+      @for (course of enrolledCourses.slice(0,3);
+            track course.id) {
+        <a [routerLink]="['/courses', course.id, 'learn']"
+           style="display:flex; align-items:center;
+                  gap:14px; padding:14px 20px;
+                  text-decoration:none; color:inherit;
+                  border-bottom:1px solid #f8f8f8;
+                  transition:background 0.2s"
+           onmouseenter="this.style.background='#f8f9fe'"
+           onmouseleave="this.style.background='transparent'">
+
+          <div style="width:44px; height:44px;
+                      border-radius:10px;
+                      background:linear-gradient(
+                        135deg,#667eea,#764ba2);
+                      display:flex; align-items:center;
+                      justify-content:center;
+                      font-size:22px; flex-shrink:0">
+            📚
+          </div>
+
+          <div style="flex:1; min-width:0">
+            <div style="font-weight:600; color:#1e1e2e;
+                        font-size:14px; white-space:nowrap;
+                        overflow:hidden;
+                        text-overflow:ellipsis">
+              {{ course.title }}
+            </div>
+            <div style="font-size:12px; color:#888;
+                        margin-top:3px">
+              {{ course.totalLessons || 0 }} lessons
+              • {{ course.category || 'General' }}
+            </div>
+          </div>
+
+          <div style="color:#667eea; font-size:18px;
+                      font-weight:700; flex-shrink:0">
+            →
+          </div>
+
+        </a>
+      }
+
+      @if (enrolledCourses.length > 3) {
+        <div style="text-align:center; padding:14px">
+          <a routerLink="/student/my-courses"
+             style="color:#667eea; font-size:13px;
+                    font-weight:600; text-decoration:none">
+            +{{ enrolledCourses.length - 3 }} more courses
+          </a>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+        <!-- RIGHT: Become Instructor -->
+        <div class="card">
+          <div class="card-header">
+            <h2>👨‍🏫 Become an Instructor</h2>
+          </div>
+          <div class="instructor-card-body">
+
+            <div class="instructor-perks">
+              <div class="perk">
+                <span class="perk-icon">📚</span>
+                <div>
+                  <strong>Create courses</strong>
+                  <p>Share your knowledge with students worldwide</p>
+                </div>
+              </div>
+              <div class="perk">
+                <span class="perk-icon">💰</span>
+                <div>
+                  <strong>Earn money</strong>
+                  <p>Set your own prices and earn from enrollments</p>
+                </div>
+              </div>
+              <div class="perk">
+                <span class="perk-icon">📊</span>
+                <div>
+                  <strong>Track progress</strong>
+                  <p>See how your students are performing</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status: not requested yet -->
+            @if (!requestSent &&
+                 user.instructorStatus === 'NONE' ||
+                 user.instructorStatus === null) {
+
+              @if (requestError) {
+                <div class="error-msg">{{ requestError }}</div>
+              }
+
+              <button class="btn-request"
+                      [disabled]="sendingRequest"
+                      (click)="requestInstructor()">
+                @if (sendingRequest) {
+                  <span>Sending...</span>
+                } @else {
+                  <span>🚀 Request Instructor Access</span>
+                }
+              </button>
+            }
+
+            <!-- Status: pending -->
+            @if (requestSent ||
+                 user.instructorStatus === 'PENDING') {
+              <div class="status-pending">
+                <div class="status-icon">⏳</div>
+                <div>
+                  <strong>Request Pending</strong>
+                  <p>Your request is under review by the admin.
+                     You'll be notified once approved.</p>
+                </div>
+              </div>
+            }
+
+            <!-- Status: approved -->
+            @if (user.instructorStatus === 'APPROVED' &&
+                 user.role === 'INSTRUCTOR') {
+              <div class="status-approved">
+                <div class="status-icon">✅</div>
+                <div>
+                  <strong>You are an Instructor!</strong>
+                  <p>Go to your instructor panel to create courses.</p>
+                  <a routerLink="/instructor/overview"
+                     class="btn-go-instructor">
+                    Go to Instructor Panel →
+                  </a>
+                </div>
+              </div>
+            }
+
+            <!-- Status: rejected -->
+            @if (user.instructorStatus === 'REJECTED') {
+              <div class="status-rejected">
+                <div class="status-icon">❌</div>
+                <div>
+                  <strong>Request Rejected</strong>
+                  <p>Your request was not approved this time.
+                     You can try again or contact support.</p>
+                </div>
+              </div>
+
+              <button class="btn-request"
+                      [disabled]="sendingRequest"
+                      (click)="requestInstructor()">
+                🔄 Request Again
+              </button>
+            }
+
+            <!-- Success message after request -->
+            @if (requestSuccess) {
+              <div class="success-msg">
+                ✅ {{ requestSuccess }}
+              </div>
+            }
+
+          </div>
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="my-courses-page">
+
+  <nav class="topnav">
+    <a routerLink="/courses" class="nav-logo">🎓 ELearn</a>
+    <div class="nav-links">
+      <a routerLink="/student/dashboard" class="nav-link">
+        Dashboard
+      </a>
+      <a routerLink="/courses" class="nav-link">
+        Browse Courses
+      </a>
+    </div>
+  </nav>
+
+  <div class="page-body">
+    <h1>My Courses</h1>
+    <p class="subtitle">Courses you are enrolled in</p>
+
+    @if (isLoading) {
+      <div class="loading">Loading your courses...</div>
+    }
+
+    @if (!isLoading && courses.length === 0) {
+      <div class="empty-state">
+        <div style="font-size:64px">📚</div>
+        <h3>No courses yet</h3>
+        <p>Browse our catalog and enroll in your first course!</p>
+        <a routerLink="/courses" class="btn-browse">
+          Browse Courses
+        </a>
+      </div>
+    }
+
+    <div class="courses-grid">
+      @for (course of courses; track course.id) {
+        <div class="course-card">
+
+          <div class="card-thumb">
+            @if (course.thumbnailUrl) {
+              <img [src]="course.thumbnailUrl"
+                   [alt]="course.title">
+            } @else {
+              <div class="thumb-icon">📚</div>
+            }
+          </div>
+
+          <div class="card-body">
+            <div class="course-category">
+              {{ course.category || 'General' }}
+            </div>
+            <h3>{{ course.title }}</h3>
+            <p>{{ course.description }}</p>
+
+            <div class="course-meta">
+              <span>📝 {{ course.totalLessons || 0 }} lessons</span>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <a [routerLink]="['/courses', course.id, 'learn']"
+               class="btn-continue">
+              ▶ Continue Learning
+            </a>
+            <a [routerLink]="['/courses', course.id]"
+               class="btn-details">
+              Details
+            </a>
+          </div>
+
+        </div>
+      }
+    </div>
+  </div>
+</div>

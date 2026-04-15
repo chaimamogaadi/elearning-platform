@@ -1,0 +1,144 @@
+<div class="catalog-page">
+
+  <!-- HEADER -->
+  <div class="catalog-header">
+    <nav class="catalog-nav">
+      <a routerLink="/" class="nav-logo">🎓 ELearn</a>
+      <div class="nav-links">
+        @if (isLoggedIn) {
+          <a routerLink="/student/dashboard" class="nav-link">
+            Dashboard
+          </a>
+          <a routerLink="/student/my-courses" class="nav-link">
+            My Courses
+          </a>
+        } @else {
+          <a routerLink="/login"    class="nav-link">Sign In</a>
+          <a routerLink="/register" class="nav-btn">Get Started</a>
+        }
+      </div>
+    </nav>
+
+    <div class="hero-section">
+      <h1>Find Your Next Course</h1>
+      <p>Learn from expert instructors and grow your skills</p>
+
+      <!-- SEARCH BAR -->
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text"
+               [(ngModel)]="searchKeyword"
+               (input)="search()"
+               placeholder="Search for courses...">
+        <button (click)="search()" class="search-btn">
+          Search
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="catalog-body">
+
+    <!-- CATEGORY FILTER -->
+    <div class="categories">
+      @for (cat of categories; track cat) {
+        <button class="cat-btn"
+                [class.active]="selectedCategory === cat ||
+                  (cat === 'All' && !selectedCategory)"
+                (click)="filterByCategory(
+                  cat === 'All' ? '' : cat)">
+          {{ cat }}
+        </button>
+      }
+    </div>
+
+    <!-- RESULTS COUNT -->
+    <div class="results-info">
+      @if (!isLoading) {
+        <span>{{ courses.length }} course(s) found</span>
+      }
+    </div>
+
+    <!-- LOADING -->
+    @if (isLoading) {
+      <div class="loading-grid">
+        @for (i of [1,2,3,4,5,6]; track i) {
+          <div class="skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+              <div class="skeleton-line w80"></div>
+              <div class="skeleton-line w60"></div>
+              <div class="skeleton-line w40"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- COURSES GRID -->
+    @if (!isLoading) {
+      @if (courses.length === 0) {
+        <div class="empty-state">
+          <div style="font-size:64px">🔍</div>
+          <h3>No courses found</h3>
+          <p>Try a different search or category</p>
+        </div>
+      }
+
+      <div class="courses-grid">
+        @for (course of courses; track course.id) {
+          <a [routerLink]="['/courses', course.id]"
+             class="course-card">
+
+            <!-- THUMBNAIL -->
+            <div class="card-thumb"
+                 [style.backgroundImage]="course.thumbnailUrl ?
+                   'url(' + course.thumbnailUrl + ')' : 'none'">
+              @if (!course.thumbnailUrl) {
+                <div class="thumb-placeholder">📚</div>
+              }
+              <div class="card-category">
+                {{ course.category || 'General' }}
+              </div>
+            </div>
+
+            <!-- CARD BODY -->
+            <div class="card-body">
+              <h3 class="card-title">{{ course.title }}</h3>
+              <p class="card-desc">{{ course.description }}</p>
+
+              <!-- INSTRUCTOR -->
+              <div class="instructor-row">
+                <div class="inst-avatar">
+                  {{ getInitials(course.instructor?.fullName) }}
+                </div>
+                <span class="inst-name">
+                  {{ course.instructor?.fullName || 'Instructor' }}
+                </span>
+              </div>
+
+              <!-- FOOTER -->
+              <div class="card-footer">
+                <div class="card-meta">
+                  <span>📝 {{ course.totalLessons || 0 }} lessons</span>
+                </div>
+                <div class="card-price">
+                  @if (course.price === 0) {
+                    <span class="price-free">FREE</span>
+                  } @else {
+                    <span class="price-paid">
+                      ${{ course.price }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+
+          </a>
+        }
+      </div>
+    }
+
+  </div>
+</div>

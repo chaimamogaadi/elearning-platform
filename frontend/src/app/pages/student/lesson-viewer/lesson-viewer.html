@@ -1,0 +1,171 @@
+<div class="viewer-shell">
+
+  <!-- TOP BAR -->
+  <div class="viewer-topbar">
+    <a [routerLink]="['/courses', courseId]"
+       class="back-btn">← Back to Course</a>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar">
+        <div class="progress-fill"
+             [style.width]="progressPercent + '%'">
+        </div>
+      </div>
+      <span class="progress-label">
+        {{ progressPercent }}% complete
+      </span>
+    </div>
+
+    <div class="lesson-counter">
+      {{ currentIndex + 1 }} / {{ lessons.length }}
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading">Loading lessons...</div>
+  }
+
+  @if (errorMessage) {
+    <div class="error-screen">
+      <div style="font-size:64px">🔒</div>
+      <h2>{{ errorMessage }}</h2>
+      <a [routerLink]="['/courses', courseId]" class="btn-back">
+        Go Back to Course
+      </a>
+    </div>
+  }
+
+  @if (!isLoading && !errorMessage && lessons.length > 0) {
+    <div class="viewer-body">
+
+      <!-- SIDEBAR: Lesson List -->
+      <aside class="lesson-sidebar">
+        <div class="sidebar-title">
+          📚 Course Lessons
+        </div>
+
+        <div class="lessons-nav">
+          @for (lesson of lessons;
+                track lesson.id; let i = $index) {
+            <div class="lesson-nav-item"
+                 [class.active]="i === currentIndex"
+                 [class.completed]="i < currentIndex"
+                 (click)="selectLesson(i)">
+
+              <div class="nav-circle">
+                @if (i < currentIndex) {
+                  <span>✓</span>
+                } @else if (i === currentIndex) {
+                  <span>▶</span>
+                } @else {
+                  <span>{{ i + 1 }}</span>
+                }
+              </div>
+
+              <div class="nav-info">
+                <div class="nav-title">{{ lesson.title }}</div>
+                <div class="nav-meta">
+                  {{ lesson.type === 'VIDEO' ? '🎥' : '📄' }}
+                  {{ lesson.durationMinutes || 0 }} min
+                </div>
+              </div>
+
+            </div>
+          }
+        </div>
+      </aside>
+
+      <!-- MAIN: Lesson Content -->
+      <main class="lesson-main">
+
+        @if (currentLesson) {
+
+          <div class="lesson-header">
+            <div class="lesson-type-tag">
+              {{ currentLesson.type === 'VIDEO' ?
+                 '🎥 Video Lesson' : '📄 Text Lesson' }}
+            </div>
+            <h1 class="lesson-title">
+              {{ currentLesson.title }}
+            </h1>
+            <div class="lesson-meta">
+              Lesson {{ currentIndex + 1 }}
+              of {{ lessons.length }} •
+              {{ currentLesson.durationMinutes || 0 }} min
+            </div>
+          </div>
+
+          <!-- VIDEO -->
+          @if (currentLesson.videoUrl) {
+            <div class="video-wrapper">
+              <iframe
+                [src]="getSafeUrl(currentLesson.videoUrl)"
+                frameborder="0"
+                allowfullscreen
+                allow="accelerometer; autoplay;
+                       clipboard-write; encrypted-media;
+                       gyroscope; picture-in-picture">
+              </iframe>
+            </div>
+          }
+
+          <!-- TEXT CONTENT -->
+          @if (currentLesson.content) {
+            <div class="lesson-content">
+              <h3>📝 Lesson Notes</h3>
+              <div class="content-text">
+                {{ currentLesson.content }}
+              </div>
+            </div>
+          }
+
+          <!-- NAVIGATION BUTTONS -->
+<div class="lesson-nav-btns">
+  <button class="btn-prev"
+          [disabled]="currentIndex === 0"
+          (click)="prevLesson()">
+    ← Previous Lesson
+  </button>
+
+  @if (!isLastLesson) {
+    <button class="btn-next"
+            (click)="nextLesson()">
+      Next Lesson →
+    </button>
+  } @else {
+    <!-- Last lesson — show completion -->
+    <div class="last-lesson-actions">
+      <div class="completed-msg">
+        🎉 You've finished all lessons!
+      </div>
+
+      @if (hasQuiz) {
+        <button class="btn-take-quiz"
+                (click)="goToQuiz()">
+          📝 Take the Quiz — {{ quizTitle }}
+        </button>
+      }
+    </div>
+  }
+</div>
+<!-- QUIZZES SECTION -->
+@if (currentIndex === lessons.length - 1) {
+  <div class="quiz-section">
+    <h3>📝 Test Your Knowledge</h3>
+    <p>Complete the quiz to earn your certificate</p>
+    <a [routerLink]="['/courses', courseId,
+                      'quiz', quizId]"
+       class="btn-take-quiz"
+       *ngIf="quizId">
+      Take the Quiz →
+    </a>
+  </div>
+}
+        }
+
+      </main>
+
+    </div>
+  }
+
+</div>

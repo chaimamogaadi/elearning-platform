@@ -1,0 +1,151 @@
+<div class="checkout-page">
+
+  <!-- NAVBAR -->
+  <nav class="checkout-nav">
+    <a routerLink="/" class="nav-logo">🎓 ELearn</a>
+    <div class="secure-badge">🔒 Secure Checkout</div>
+  </nav>
+
+  <!-- LOADING -->
+  @if (isLoading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Preparing secure checkout...</p>
+    </div>
+  }
+
+  <!-- SUCCESS -->
+  @if (successMessage) {
+    <div class="success-screen">
+      <div class="success-icon">🎉</div>
+      <h2>Payment Successful!</h2>
+      <p>{{ successMessage }}</p>
+      <p class="redirect-msg">
+        Redirecting to your course...
+      </p>
+    </div>
+  }
+
+  <!-- CHECKOUT BODY -->
+  @if (!isLoading && !successMessage && intentData) {
+    <div class="checkout-body">
+
+      <!-- ORDER SUMMARY -->
+      <div class="order-summary">
+        <h2>Order Summary</h2>
+
+        <div class="order-course">
+          <div class="order-thumb">📚</div>
+          <div class="order-info">
+            <div class="order-title">
+              {{ course?.title }}
+            </div>
+            <div class="order-meta">
+              {{ course?.totalLessons || 0 }} lessons
+              • {{ course?.category || 'General' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="order-divider"></div>
+
+        <div class="order-line">
+          <span>Course price</span>
+          <span>${{ intentData.amount }}</span>
+        </div>
+        <div class="order-line">
+          <span>Discount</span>
+          <span class="green">$0.00</span>
+        </div>
+
+        <div class="order-divider"></div>
+
+        <div class="order-total">
+          <span>Total</span>
+          <span>${{ intentData.amount }}</span>
+        </div>
+
+        <div class="order-perks">
+          <div class="perk-item">
+            ✅ Full lifetime access
+          </div>
+          <div class="perk-item">
+            📱 Access on all devices
+          </div>
+          <div class="perk-item">
+            🏆 Certificate of completion
+          </div>
+          <div class="perk-item">
+            🔄 30-day money-back guarantee
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYMENT FORM -->
+      <div class="payment-form-wrap">
+        <h2>Payment Details</h2>
+        <p class="payment-subtitle">
+          Your payment is secured by Stripe
+        </p>
+
+        @if (errorMessage) {
+          <div class="error-msg">
+            ❌ {{ errorMessage }}
+          </div>
+        }
+
+        <!-- Stripe mounts its UI here -->
+        <div id="payment-element"
+             class="stripe-element">
+        </div>
+
+        <!-- Loading indicator while Stripe loads -->
+        @if (!isStripeReady) {
+          <div class="stripe-loading">
+            <div class="spinner-sm-dark"></div>
+            <span>Loading payment form...</span>
+          </div>
+        }
+
+        <!-- Pay button — disabled until ready -->
+        <button class="btn-pay"
+                [disabled]="isPaying || !isStripeReady"
+                (click)="pay()">
+          @if (isPaying) {
+            <span class="paying-text">
+              <span class="spinner-sm"></span>
+              Processing payment...
+            </span>
+          } @else if (!isStripeReady) {
+            <span>⏳ Loading payment form...</span>
+          } @else {
+            <span>
+              🔒 Pay ${{ intentData.amount }} Now
+            </span>
+          }
+        </button>
+
+        <div class="payment-security">
+          <span>🔒 256-bit SSL encryption</span>
+          <span>💳 Powered by Stripe</span>
+        </div>
+
+        <!-- TEST CARD BOX -->
+        <div class="test-card-info">
+          <div class="test-title">
+            🧪 Test Mode — Use this card:
+          </div>
+          <div class="test-card">
+            4242 4242 4242 4242
+          </div>
+          <div class="test-meta">
+            Any future expiry date (e.g. 12/29)
+            • Any 3-digit CVC • Any ZIP code
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>

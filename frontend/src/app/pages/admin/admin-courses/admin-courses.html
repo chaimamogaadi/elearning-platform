@@ -1,0 +1,64 @@
+<p>admin-courses works!</p>
+<div class="courses-page">
+
+  <div class="page-header">
+    <h1>Course Management</h1>
+    <p>Review, approve and manage all platform courses</p>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading">Loading courses...</div>
+  }
+
+  @if (!isLoading && courses.length === 0) {
+    <div class="empty-state">
+      <div style="font-size:48px">📚</div>
+      <p>No courses yet. Instructors haven't submitted any courses.</p>
+    </div>
+  }
+
+  <div class="courses-grid">
+    @for (course of courses; track course.id) {
+      <div class="course-card">
+
+        <div class="course-header">
+          <div class="course-thumb">📚</div>
+          <span class="status-badge {{ getStatusClass(course.status) }}">
+            {{ course.status }}
+          </span>
+        </div>
+
+        <div class="course-body">
+          <h3 class="course-title">{{ course.title }}</h3>
+          <p class="course-desc">{{ course.description }}</p>
+
+          <div class="course-meta">
+            <span>👨‍🏫 {{ course.instructor?.fullName || 'Unknown' }}</span>
+            <span>💰 ${{ course.price }}</span>
+          </div>
+        </div>
+
+        <div class="course-actions">
+          @if (course.status === 'PENDING') {
+            <button class="btn-approve" (click)="approve(course.id)">
+              ✅ Approve
+            </button>
+            <button class="btn-reject" (click)="reject(course.id)">
+              ❌ Reject
+            </button>
+          }
+          @if (course.status !== 'PENDING') {
+            <span style="font-size:13px; color:#aaa">
+              {{ course.status === 'APPROVED' ? '✅ Approved' : '❌ Rejected' }}
+            </span>
+          }
+          <button class="btn-delete" (click)="delete(course.id)">
+            🗑️ Delete
+          </button>
+        </div>
+
+      </div>
+    }
+  </div>
+
+</div>

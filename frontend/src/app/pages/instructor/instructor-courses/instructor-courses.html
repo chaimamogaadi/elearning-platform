@@ -1,0 +1,121 @@
+<div class="courses-page">
+  <div class="page-header">
+    <div>
+      <h1>My Courses</h1>
+      <p>Create and manage your courses</p>
+    </div>
+    <button class="btn-create" (click)="openCreateForm()">
+      + New Course
+    </button>
+  </div>
+
+  @if (successMessage) {
+    <div class="success-msg">✅ {{ successMessage }}</div>
+  }
+  @if (errorMessage) {
+    <div class="error-msg">❌ {{ errorMessage }}</div>
+  }
+
+  <!-- CREATE / EDIT FORM -->
+  @if (showForm) {
+    <div class="form-card">
+      <h2>{{ editingCourseId ? 'Edit Course' : 'Create New Course' }}</h2>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <div class="form-group">
+          <label>Course Title *</label>
+          <input formControlName="title"
+                 placeholder="e.g. Complete Angular Course">
+        </div>
+
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea formControlName="description" rows="4"
+                    placeholder="What will students learn?"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select formControlName="category">
+              <option value="">Select category</option>
+              @for (cat of categories; track cat) {
+                <option [value]="cat">{{ cat }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Price ($)</label>
+            <input type="number" formControlName="price"
+                   placeholder="0 for free" min="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Thumbnail URL (optional)</label>
+          <input formControlName="thumbnailUrl"
+                 placeholder="https://...">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel"
+                  (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-submit"
+                  [disabled]="form.invalid">
+            {{ editingCourseId ? 'Update Course' : 'Create Course' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  }
+
+  <!-- COURSES LIST -->
+  @if (isLoading) {
+    <div class="loading">Loading courses...</div>
+  }
+
+  @if (!isLoading && courses.length === 0 && !showForm) {
+    <div class="empty-state">
+      <div style="font-size:56px">📚</div>
+      <h3>No courses yet</h3>
+      <p>Create your first course and start teaching!</p>
+    </div>
+  }
+
+  <div class="courses-grid">
+    @for (course of courses; track course.id) {
+      <div class="course-card">
+        <div class="card-header">
+          <span class="course-category">
+            {{ course.category || 'General' }}
+          </span>
+          <span class="status-pill status-{{ course.status?.toLowerCase() }}">
+            {{ course.status }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          <h3>{{ course.title }}</h3>
+          <p>{{ course.description }}</p>
+          <div class="course-stats">
+            <span>📝 {{ course.totalLessons || 0 }} lessons</span>
+            <span>💰 ${{ course.price }}</span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <a [routerLink]="['/instructor/courses', course.id, 'lessons']"
+             class="btn-action btn-lessons">📝 Lessons</a>
+          <a [routerLink]="['/instructor/courses', course.id, 'quiz']"
+             class="btn-action btn-quiz">❓ Quiz</a>
+          <button class="btn-action btn-edit"
+                  (click)="openEditForm(course)">✏️</button>
+          <button class="btn-action btn-delete"
+                  (click)="deleteCourse(course.id)">🗑️</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

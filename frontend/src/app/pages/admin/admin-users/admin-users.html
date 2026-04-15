@@ -1,0 +1,109 @@
+<div class="users-page">
+
+  <div class="page-header">
+    <div>
+      <h1>User Management</h1>
+      <p>Manage all students, instructors and admins</p>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input type="text" placeholder="🔍  Search by name or email..."
+           [(ngModel)]="searchKeyword"
+           (input)="search()"
+           class="search-input">
+  </div>
+
+  <!-- Users Table -->
+  <div class="table-card">
+    @if (isLoading) {
+      <div class="loading">Loading users...</div>
+    }
+
+    @if (!isLoading) {
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users; track user.id) {
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar">
+                    {{ user.fullName?.charAt(0)?.toUpperCase() }}
+                  </div>
+                  <div>
+                    <div class="user-name">{{ user.fullName }}</div>
+                    <div class="user-username">@{{ user.username }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="email-cell">{{ user.email }}</td>
+              <td>
+                <span class="role-badge {{ getRoleBadgeClass(user.role) }}">
+                  {{ user.role }}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge"
+                      [class.active]="user.isActive"
+                      [class.inactive]="!user.isActive">
+                  {{ user.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td class="date-cell">
+                {{ user.createdAt | date:'mediumDate' }}
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-toggle"
+                          (click)="toggleStatus(user)"
+                          [title]="user.isActive ? 'Deactivate' : 'Activate'">
+                    {{ user.isActive ? '🔒' : '🔓' }}
+                  </button>
+                  <button class="btn-delete"
+                          (click)="confirmDelete(user.id)"
+                          title="Delete user">
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (users.length === 0) {
+        <div class="empty-state">
+          <div>🔍</div>
+          <p>No users found</p>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  @if (confirmDeleteId) {
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-icon">⚠️</div>
+        <h3>Delete User?</h3>
+        <p>This action cannot be undone. The user and all their data will be permanently deleted.</p>
+        <div class="modal-actions">
+          <button class="btn-cancel" (click)="confirmDeleteId = null">Cancel</button>
+          <button class="btn-confirm-delete" (click)="deleteUser()">Yes, Delete</button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

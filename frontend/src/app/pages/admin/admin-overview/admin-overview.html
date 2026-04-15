@@ -1,0 +1,99 @@
+<div class="overview">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1>Dashboard Overview</h1>
+    <p>Welcome back, Admin. Here's what's happening on your platform.</p>
+  </div>
+
+  <!-- Stats Cards -->
+  @if (isLoading) {
+    <div class="loading">Loading statistics...</div>
+  }
+
+  @if (stats) {
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.totalUsers }}</div>
+          <div class="stat-label">Total Users</div>
+        </div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">🎓</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.totalStudents }}</div>
+          <div class="stat-label">Students</div>
+        </div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon">👨‍🏫</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.totalInstructors }}</div>
+          <div class="stat-label">Instructors</div>
+        </div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon">📚</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.totalCourses }}</div>
+          <div class="stat-label">Courses</div>
+        </div>
+      </div>
+      <div class="stat-card teal">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.totalEnrollments }}</div>
+          <div class="stat-label">Enrollments</div>
+        </div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-icon">🔔</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.pendingInstructorRequests }}</div>
+          <div class="stat-label">Pending Requests</div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Pending Instructor Requests -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Pending Instructor Requests</h2>
+      <span class="badge">{{ pending.length }}</span>
+    </div>
+
+    @if (pending.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">✅</div>
+        <p>No pending requests. You're all caught up!</p>
+      </div>
+    }
+
+    @for (user of pending; track user.id) {
+      <div class="request-card">
+        <div class="request-avatar">
+          {{ user.fullName?.charAt(0)?.toUpperCase() }}
+        </div>
+        <div class="request-info">
+          <div class="request-name">{{ user.fullName }}</div>
+          <div class="request-email">{{ user.email }}</div>
+          <div class="request-date">
+            Joined: {{ user.createdAt | date:'mediumDate' }}
+          </div>
+        </div>
+        <div class="request-actions">
+          <button class="btn-approve" (click)="approve(user.id)">
+            ✅ Approve
+          </button>
+          <button class="btn-reject" (click)="reject(user.id)">
+            ❌ Reject
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>

@@ -1,0 +1,24 @@
+<div class="auth-container">
+  <div class="auth-card" style="max-width: 600px;">
+
+    <div class="logo">🎉</div>
+    <h2>Welcome to Your Dashboard!</h2>
+    <p class="subtitle">You are successfully logged in</p>
+
+    <div style="background:#f5f5f5; border-radius:12px; padding:20px; margin: 20px 0; text-align:left">
+      <p style="font-size:14px; color:#666; margin-bottom:8px">Logged in as:</p>
+      <p style="font-size:18px; font-weight:600; color:#333">{{ user?.username }}</p>
+      <p style="font-size:14px; color:#888">{{ user?.email }}</p>
+      <span style="background:#667eea; color:white; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600">
+        {{ user?.role }}
+      </span>
+    </div>
+
+    <button mat-raised-button color="warn"
+            style="width:100%; margin-top:8px"
+            (click)="logout()">
+      Logout
+    </button>
+
+  </div>
+</div>

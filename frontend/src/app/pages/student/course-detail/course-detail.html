@@ -1,0 +1,166 @@
+<div class="detail-page">
+
+  <!-- NAVBAR -->
+  <nav class="detail-nav">
+    <a routerLink="/courses" class="back-link">
+      ← Back to Courses
+    </a>
+    <a routerLink="/" class="nav-logo">🎓 ELearn</a>
+    <div>
+      @if (isLoggedIn) {
+        <a routerLink="/student/dashboard"
+           class="nav-link">Dashboard</a>
+      } @else {
+        <a routerLink="/login" class="nav-link">Sign In</a>
+      }
+    </div>
+  </nav>
+
+  @if (isLoading) {
+    <div class="loading">Loading course...</div>
+  }
+
+  @if (!isLoading && course) {
+
+    <!-- COURSE HERO -->
+    <div class="course-hero">
+      <div class="hero-content">
+        <div class="course-category-badge">
+          {{ course.category || 'General' }}
+        </div>
+        <h1>{{ course.title }}</h1>
+        <p class="course-desc">{{ course.description }}</p>
+
+        <div class="instructor-info">
+          <div class="inst-avatar">
+            {{ course.instructor?.fullName?.charAt(0)?.toUpperCase() }}
+          </div>
+          <div>
+            <div class="inst-label">Instructor</div>
+            <div class="inst-name">
+              {{ course.instructor?.fullName }}
+            </div>
+          </div>
+        </div>
+
+        <div class="course-stats">
+          <div class="stat">
+            <span class="stat-icon">📝</span>
+            <span>{{ course.totalLessons || 0 }} lessons</span>
+          </div>
+          <div class="stat">
+            <span class="stat-icon">👥</span>
+            <span>Students enrolled</span>
+          </div>
+          <div class="stat">
+            <span class="stat-icon">🏆</span>
+            <span>Certificate included</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENROLL CARD -->
+      <div class="enroll-card">
+        <div class="course-price">
+          @if (course.price === 0) {
+            <span class="price-free">FREE</span>
+          } @else {
+            <span class="price-amount">${{ course.price }}</span>
+          }
+        </div>
+
+        @if (successMessage) {
+          <div class="success-msg">✅ {{ successMessage }}</div>
+        }
+        @if (errorMessage) {
+          <div class="error-msg">❌ {{ errorMessage }}</div>
+        }
+
+        @if (isEnrolled) {
+          <button class="btn-start" (click)="startLearning()">
+            🎓 Continue Learning
+          </button>
+          <div class="enrolled-badge">
+            ✅ You are enrolled in this course
+          </div>
+        } @else {
+          <button class="btn-enroll"
+                  [disabled]="enrolling"
+                  (click)="enroll()">
+            {{ enrolling ? 'Enrolling...' :
+               course.price === 0 ?
+               '🚀 Enroll for Free' :
+               '💳 Enroll Now — $' + course.price }}
+          </button>
+          @if (!isLoggedIn) {
+            <p class="login-hint">
+              <a routerLink="/login">Sign in</a>
+              to enroll in this course
+            </p>
+          }
+        }
+
+        <div class="course-includes">
+          <div class="include-title">This course includes:</div>
+          <div class="include-item">
+            📝 {{ course.totalLessons || 0 }} lessons
+          </div>
+          <div class="include-item">⏱️ Learn at your own pace</div>
+          <div class="include-item">📱 Access on all devices</div>
+          <div class="include-item">🏆 Certificate of completion</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LESSONS PREVIEW -->
+    <div class="lessons-section">
+      <div class="lessons-container">
+        <h2>Course Content</h2>
+        <p class="lessons-summary">
+          {{ course.totalLessons || 0 }} lessons in this course
+        </p>
+
+        @if (isEnrolled) {
+          <!-- show clickable lessons when enrolled -->
+          <div class="lessons-list">
+            @for (lesson of lessons; track lesson.id) {
+              <div class="lesson-row"
+                   (click)="startLearning()">
+                <div class="lesson-num">
+                  {{ lesson.orderNum }}
+                </div>
+                <div class="lesson-icon">
+                  {{ lesson.type === 'VIDEO' ? '🎥' : '📄' }}
+                </div>
+                <div class="lesson-info">
+                  <span class="lesson-title">
+                    {{ lesson.title }}
+                  </span>
+                  <span class="lesson-dur">
+                    {{ lesson.durationMinutes || 0 }} min
+                  </span>
+                </div>
+                <div class="lesson-arrow">→</div>
+              </div>
+            }
+          </div>
+        } @else {
+          <!-- locked preview -->
+          <div class="locked-preview">
+            <div class="lock-icon">🔒</div>
+            <h3>Enroll to access all lessons</h3>
+            <p>Get full access to all
+               {{ course.totalLessons || 0 }} lessons
+            </p>
+            <button class="btn-enroll-mid"
+                    (click)="enroll()">
+              {{ course.price === 0 ?
+                 'Enroll for Free' :
+                 'Enroll Now — $' + course.price }}
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

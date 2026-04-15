@@ -1,0 +1,102 @@
+.courses-page { max-width: 1100px; }
+
+.page-header { margin-bottom: 28px; }
+.page-header h1 { font-size: 28px; font-weight: 700; color: #1e1e2e; }
+.page-header p { color: #888; font-size: 14px; }
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.course-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.course-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.course-header {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.course-thumb { font-size: 40px; }
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.status-approved { background: #e8f8f0; color: #27AE60; }
+.status-pending  { background: #fff8e1; color: #F39C12; }
+.status-rejected { background: #fef0f0; color: #E74C3C; }
+.status-draft    { background: #f0f0f0; color: #888; }
+
+.course-body { padding: 20px; }
+.course-title {
+  font-size: 16px; font-weight: 700;
+  color: #1e1e2e; margin-bottom: 8px;
+}
+.course-desc {
+  font-size: 13px; color: #888;
+  line-height: 1.6; margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.course-meta {
+  display: flex; gap: 16px;
+  font-size: 13px; color: #666;
+}
+
+.course-actions {
+  padding: 16px 20px;
+  border-top: 1px solid #f0f0f0;
+  display: flex; gap: 8px; align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-approve {
+  padding: 8px 14px; border-radius: 8px;
+  background: #e8f8f0; color: #27AE60;
+  border: 1px solid #27AE60;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-approve:hover { background: #27AE60; color: white; }
+
+.btn-reject {
+  padding: 8px 14px; border-radius: 8px;
+  background: #fef0f0; color: #E74C3C;
+  border: 1px solid #E74C3C;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-reject:hover { background: #E74C3C; color: white; }
+
+.btn-delete {
+  margin-left: auto;
+  padding: 8px 14px; border-radius: 8px;
+  background: none; color: #aaa;
+  border: 1px solid #e0e0e0;
+  font-size: 13px; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-delete:hover { background: #fef0f0; color: #E74C3C; border-color: #E74C3C; }
+
+.loading, .empty-state {
+  text-align: center; padding: 60px;
+  color: #aaa; font-size: 14px;
+  background: white; border-radius: 16px;
+}

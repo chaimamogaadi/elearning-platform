@@ -1,0 +1,68 @@
+<div class="overview">
+  <div class="page-header">
+    <h1>Welcome back! 👋</h1>
+    <p>Here's a summary of your teaching activity</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📚</div>
+      <div class="stat-value">{{ courses.length }}</div>
+      <div class="stat-label">My Courses</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📝</div>
+      <div class="stat-value">{{ totalLessons }}</div>
+      <div class="stat-label">Total Lessons</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-value">
+        {{ courses. filter(c => c.status === 'APPROVED').length  }}
+      </div>
+      <div class="stat-label">Approved Courses</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>My Courses</h2>
+      <a routerLink="/instructor/courses" class="btn-view-all">
+        Manage Courses →
+      </a>
+    </div>
+
+    @if (isLoading) {
+      <div class="loading">Loading your courses...</div>
+    }
+
+    @if (!isLoading && courses.length === 0) {
+      <div class="empty-state">
+        <div style="font-size:48px">📚</div>
+        <p>You haven't created any courses yet.</p>
+        <a routerLink="/instructor/courses" class="btn-create">
+          Create Your First Course
+        </a>
+      </div>
+    }
+
+    <div class="courses-list">
+      @for (course of courses.slice(0,3); track course.id) {
+        <div class="course-row">
+          <div class="course-thumb">📚</div>
+          <div class="course-info">
+            <div class="course-title">{{ course.title }}</div>
+            <div class="course-meta">
+              {{ course.totalLessons }} lessons •
+              ${{ course.price }}
+            </div>
+          </div>
+          <span class="status-pill"
+                [class]="'status-' + course.status?.toLowerCase()">
+            {{ course.status }}
+          </span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

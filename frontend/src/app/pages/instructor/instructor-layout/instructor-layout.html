@@ -1,0 +1,38 @@
+<div class="instructor-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span>🎓</span>
+      <span class="logo-text">Instructor Panel</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/instructor/overview"
+         routerLinkActive="active" class="nav-item">
+        <span>📊</span><span>Overview</span>
+      </a>
+      <a routerLink="/instructor/courses"
+         routerLinkActive="active" class="nav-item">
+        <span>📚</span><span>My Courses</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="avatar">
+          {{ user?.username?.charAt(0)?.toUpperCase() }}
+        </div>
+        <div>
+          <div class="uname">{{ user?.username }}</div>
+          <div class="urole">Instructor</div>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        🚪 Logout
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,464 @@
+<div class="home-page">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a routerLink="/" class="nav-brand">
+        <span>🎓</span>
+        <span class="brand-name">ELearn</span>
+      </a>
+      <div class="nav-links">
+        <a routerLink="/courses" class="nav-link">
+          Courses
+        </a>
+      </div>
+      <div class="nav-actions">
+        @if (isLoggedIn && user) {
+          <a [routerLink]="
+               user.role === 'ADMIN'
+               ? '/admin/overview'
+               : user.role === 'INSTRUCTOR'
+               ? '/instructor/overview'
+               : '/student/dashboard'"
+             class="btn-ghost">
+            My Dashboard
+          </a>
+          <div class="nav-avatar">
+            {{ getInitials(user.username) }}
+          </div>
+        } @else {
+          <a routerLink="/login"
+             class="btn-ghost">Sign In</a>
+          <a routerLink="/register"
+             class="btn-primary-nav">
+            Get Started Free
+          </a>
+        }
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-content">
+
+        <div class="hero-badge">
+          🚀 Online Learning Platform
+        </div>
+
+        <h1 class="hero-title">
+          Learn New Skills<br>
+          <span class="hero-highlight">
+            Without Limits
+          </span>
+        </h1>
+
+        <p class="hero-sub">
+          Access expert-led courses in programming,
+          design, business and more. Learn at your
+          own pace and advance your career.
+        </p>
+
+        <div class="hero-btns">
+          <a routerLink="/courses"
+             class="btn-hero-main">
+            Explore Courses
+          </a>
+          @if (!isLoggedIn) {
+            <a routerLink="/register"
+               class="btn-hero-outline">
+              Start for Free →
+            </a>
+          }
+        </div>
+
+        <!-- STATS -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num">
+              {{ stats.totalCourses }}+
+            </div>
+            <div class="stat-txt">Courses</div>
+          </div>
+          <div class="stat-sep"></div>
+          <div class="stat-item">
+            <div class="stat-num">
+              {{ stats.totalStudents }}+
+            </div>
+            <div class="stat-txt">Students</div>
+          </div>
+          <div class="stat-sep"></div>
+          <div class="stat-item">
+            <div class="stat-num">
+              {{ stats.totalInstructors }}+
+            </div>
+            <div class="stat-txt">Instructors</div>
+          </div>
+          <div class="stat-sep"></div>
+          <div class="stat-item">
+            <div class="stat-num">
+              {{ stats.totalEnrollments }}+
+            </div>
+            <div class="stat-txt">Enrollments</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- HERO VISUAL -->
+      <div class="hero-visual">
+
+        <div class="vis-card main-vis-card">
+          <div class="vis-card-icon">💻</div>
+          <div class="vis-card-body">
+            <div class="vis-card-title">
+              Full Stack Development
+            </div>
+            <div class="vis-card-meta">
+              48 lessons • Certificate
+            </div>
+            <div class="vis-progress">
+              <div class="vis-progress-bar">
+                <div class="vis-progress-fill"
+                     style="width:65%">
+                </div>
+              </div>
+              <span>65% complete</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="vis-card float-a">
+          <span class="float-ico">🏆</span>
+          <div>
+            <div class="float-title">
+              Certificate Earned
+            </div>
+            <div class="float-sub">
+              Angular Mastery
+            </div>
+          </div>
+        </div>
+
+        <div class="vis-card float-b">
+          <span class="float-ico">⭐</span>
+          <div>
+            <div class="float-title">4.9 Rating</div>
+            <div class="float-sub">2.4k reviews</div>
+          </div>
+        </div>
+
+        <div class="vis-card float-c">
+          <span class="float-ico">👥</span>
+          <div>
+            <div class="float-title">
+              {{ stats.totalStudents }}+ Students
+            </div>
+            <div class="float-sub">
+              Learning today
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="section bg-light">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="section-label">EXPLORE</div>
+        <h2 class="section-title">
+          Browse by Category
+        </h2>
+        <p class="section-sub">
+          Find the perfect course in your area
+          of interest
+        </p>
+      </div>
+
+      @if (isLoading) {
+        <div class="cat-grid">
+          @for (i of [1,2,3,4,5,6,7,8]; track i) {
+            <div class="skeleton-box h110"></div>
+          }
+        </div>
+      } @else if (categoryList.length === 0) {
+        <div class="empty-msg">
+          No categories yet. Check back soon!
+        </div>
+      } @else {
+        <div class="cat-grid">
+          @for (cat of categoryList; track cat.name) {
+            <a routerLink="/courses"
+               class="cat-card">
+              <div class="cat-ico">
+                {{ getCategoryIcon(cat.name) }}
+              </div>
+              <div class="cat-name">
+                {{ cat.name }}
+              </div>
+              <div class="cat-count">
+                {{ cat.count }}
+                {{ cat.count === 1
+                   ? 'course' : 'courses' }}
+              </div>
+            </a>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- FEATURED COURSES -->
+  <section class="section bg-white">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="section-label">POPULAR</div>
+        <h2 class="section-title">
+          Featured Courses
+        </h2>
+        <p class="section-sub">
+          Hand-picked courses to get you started
+        </p>
+      </div>
+
+      @if (isLoading) {
+        <div class="courses-grid">
+          @for (i of [1,2,3]; track i) {
+            <div class="course-skel">
+              <div class="skel-img"></div>
+              <div style="padding:16px">
+                <div class="skel-line w70"></div>
+                <div class="skel-line w50"></div>
+                <div class="skel-line w30"></div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (featuredCourses.length === 0) {
+        <div class="empty-state">
+          <div style="font-size:56px">📚</div>
+          <h3>No courses yet</h3>
+          <p>Be the first to create a course!</p>
+          @if (!isLoggedIn) {
+            <a routerLink="/register"
+               class="btn-hero-main"
+               style="margin-top:20px;
+                      display:inline-block">
+              Get Started
+            </a>
+          }
+        </div>
+      } @else {
+        <div class="courses-grid">
+          @for (c of featuredCourses; track c.id) {
+            <a [routerLink]="['/courses', c.id]"
+               class="course-card">
+
+              <div class="course-thumb"
+                   [style.backgroundImage]="
+                     c.thumbnailUrl
+                     ? 'url(' + c.thumbnailUrl + ')'
+                     : 'none'">
+                @if (!c.thumbnailUrl) {
+                  <div class="thumb-ico">
+                    {{ getCategoryIcon(c.category) }}
+                  </div>
+                }
+                <span class="thumb-badge">
+                  {{ c.category || 'General' }}
+                </span>
+              </div>
+
+              <div class="course-body">
+                <h3 class="course-title">
+                  {{ c.title }}
+                </h3>
+                <p class="course-desc">
+                  {{ c.description }}
+                </p>
+
+                <div class="inst-row">
+                  <div class="inst-dot">
+                    {{ getInitials(
+                       c.instructor?.fullName) }}
+                  </div>
+                  <span class="inst-name">
+                    {{ c.instructor?.fullName
+                       || 'Instructor' }}
+                  </span>
+                </div>
+
+                <div class="course-foot">
+                  <span class="meta-txt">
+                    📝 {{ c.totalLessons || 0 }}
+                    lessons
+                  </span>
+                  @if (!c.price || c.price === 0) {
+                    <span class="badge-free">FREE</span>
+                  } @else {
+                    <span class="price-tag">
+                      ${{ c.price }}
+                    </span>
+                  }
+                </div>
+              </div>
+
+            </a>
+          }
+        </div>
+
+        <div style="text-align:center;
+                    margin-top:48px">
+          <a routerLink="/courses"
+             class="btn-outline-purple">
+            View All Courses →
+          </a>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- INSTRUCTORS -->
+  <section class="section bg-light">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="section-label">MEET</div>
+        <h2 class="section-title">
+          Our Instructors
+        </h2>
+        <p class="section-sub">
+          Learn from passionate experts
+          in their fields
+        </p>
+      </div>
+
+      @if (isLoading) {
+        <div class="inst-grid">
+          @for (i of [1,2,3,4]; track i) {
+            <div class="skeleton-box h200"></div>
+          }
+        </div>
+      } @else if (instructors.length === 0) {
+        <div class="empty-msg">
+          No instructors yet. Be the first!
+        </div>
+      } @else {
+        <div class="inst-grid">
+          @for (inst of instructors.slice(0,4);
+                track inst.id) {
+            <div class="inst-card">
+              <div class="inst-avatar">
+                {{ getInitials(inst.fullName) }}
+              </div>
+              <div class="inst-fullname">
+                {{ inst.fullName }}
+              </div>
+              <div class="inst-handle">
+                @{{ inst.username }}
+              </div>
+              <div class="inst-verified">
+                ✅ Verified Instructor
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- CTA -->
+  @if (!isLoggedIn) {
+    <section class="cta-section">
+      <div class="cta-inner">
+        <div>
+          <h2 class="cta-title">
+            Ready to Start Learning?
+          </h2>
+          <p class="cta-sub">
+            Join thousands of students already
+            learning on ELearn. Free to get started.
+          </p>
+          <div class="cta-btns">
+            <a routerLink="/register"
+               class="btn-cta-white">
+              Create Free Account
+            </a>
+            <a routerLink="/courses"
+               class="btn-cta-outline">
+              Browse Courses
+            </a>
+          </div>
+        </div>
+        <div class="cta-emoji">🎓</div>
+      </div>
+    </section>
+  }
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+
+      <div>
+        <div class="footer-brand">
+          <span>🎓</span>
+          <span>ELearn</span>
+        </div>
+        <p class="footer-tagline">
+          Empowering learners worldwide
+          with quality education.
+        </p>
+      </div>
+
+      <div class="footer-cols">
+
+        <div class="footer-col">
+          <div class="col-title">Platform</div>
+          <a routerLink="/courses"
+             class="col-link">Browse Courses</a>
+          <a routerLink="/register"
+             class="col-link">Become a Student</a>
+          <a routerLink="/register"
+             class="col-link">
+            Become an Instructor
+          </a>
+        </div>
+
+        <div class="footer-col">
+          <div class="col-title">Account</div>
+          <a routerLink="/login"
+             class="col-link">Sign In</a>
+          <a routerLink="/register"
+             class="col-link">Sign Up</a>
+          <a routerLink="/forgot-password"
+             class="col-link">Reset Password</a>
+        </div>
+
+        <div class="footer-col">
+          <div class="col-title">Legal</div>
+          <a href="#" class="col-link">
+            Privacy Policy
+          </a>
+          <a href="#" class="col-link">
+            Terms of Service
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span>
+        © {{ currentYear }} ELearn.
+        All rights reserved.
+      </span>
+      <span>
+        Built with ❤️ for learners worldwide
+      </span>
+    </div>
+  </footer>
+
+</div>

@@ -1,0 +1,78 @@
+<div class="auth-container">
+  <div class="auth-card">
+
+    <div class="logo">🎓</div>
+    <h2>Create Account</h2>
+    <p class="subtitle">Start learning today</p>
+
+    @if (errorMessage) {
+      <div class="error-message">{{ errorMessage }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Full Name</mat-label>
+        <input matInput formControlName="fullName" placeholder="John Doe">
+        <mat-icon matSuffix>person</mat-icon>
+        @if (form.get('fullName')?.hasError('required') && form.get('fullName')?.touched) {
+          <mat-error>Full name is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" placeholder="john123">
+        <mat-icon matSuffix>alternate_email</mat-icon>
+        @if (form.get('username')?.hasError('required') && form.get('username')?.touched) {
+          <mat-error>Username is required</mat-error>
+        }
+        @if (form.get('username')?.hasError('minlength')) {
+          <mat-error>At least 3 characters</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="john@email.com">
+        <mat-icon matSuffix>email</mat-icon>
+        @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+          <mat-error>Email is required</mat-error>
+        }
+        @if (form.get('email')?.hasError('email')) {
+          <mat-error>Enter a valid email</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password"
+               [type]="hidePassword ? 'password' : 'text'">
+        <mat-icon matSuffix (click)="hidePassword = !hidePassword"
+                  style="cursor:pointer">
+          {{ hidePassword ? 'visibility_off' : 'visibility' }}
+        </mat-icon>
+        @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+          <mat-error>Password is required</mat-error>
+        }
+        @if (form.get('password')?.hasError('minlength')) {
+          <mat-error>At least 6 characters</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="auth-btn"
+              type="submit" [disabled]="isLoading || form.invalid">
+        @if (isLoading) {
+          <mat-spinner diameter="20" style="display:inline-block;margin-right:8px" />
+        }
+        {{ isLoading ? 'Creating account...' : 'Create Account' }}
+      </button>
+
+    </form>
+
+    <div class="auth-links">
+      Already have an account? <a routerLink="/login">Sign In</a>
+    </div>
+
+  </div>
+</div>
