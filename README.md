@@ -205,7 +205,7 @@ Frontend runs at → `http://localhost:4200`
 ![student](docs/screenshots/student.PNG)
 
 ### Certificate
-![certificate](docs/screenshots/certificate.Png)
+![certificate](docs/screenshots/certificate.PNG)
 
 ---
 
