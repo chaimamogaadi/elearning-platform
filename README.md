@@ -4,7 +4,7 @@ A complete full-stack e-learning platform similar to
 Udemy and Coursera, built from scratch with
 Spring Boot, Angular 18+, MySQL, and Stripe.
 
-![home](docs/screenshots/home.png)
+![home](docs/screenshots/home.Png)
 
 ---
 
@@ -181,31 +181,31 @@ Frontend runs at → `http://localhost:4200`
 ![resetPassword](docs/screenshots/resetPassword.PNG)
 
 ### Home Page
-![home](docs/screenshots/home.png)
+![home](docs/screenshots/home.Png)
 
 ### Course Catalog
-![course](docs/screenshots/course.png)
+![course](docs/screenshots/course.Png)
 
 ### lesson Viewer
-![lesson](docs/screenshots/lesson.png)
+![lesson](docs/screenshots/lesson.Png)
 
 ### Quiz Player
-![quiz](docs/screenshots/quiz.png)
+![quiz](docs/screenshots/quiz.Png)
 
 ### Payment
 ![Payment](docs/screenshots/Payment.PNG)
 
 ### Admin Dashboard
-![admin](docs/screenshots/admin.png)
+![admin](docs/screenshots/admin.Png)
 
 ### Instructor Dashboard
-![instructor](docs/screenshots/instructor.png)
+![instructor](docs/screenshots/instructor.Png)
 
 ### Student Dashboard
-![student](docs/screenshots/student.png)
+![student](docs/screenshots/student.Png)
 
 ### Certificate
-![certificate](docs/screenshots/certificate.png)
+![certificate](docs/screenshots/certificate.Png)
 
 ---
 
