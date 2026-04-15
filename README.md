@@ -4,7 +4,7 @@ A complete full-stack e-learning platform similar to
 Udemy and Coursera, built from scratch with
 Spring Boot, Angular 18+, MySQL, and Stripe.
 
-![home](docs/screenshots/home.Png)
+![home](docs/screenshots//home.Png)
 
 ---
 
